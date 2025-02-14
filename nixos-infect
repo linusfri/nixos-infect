@@ -3,6 +3,8 @@
 # More info at: https://github.com/elitak/nixos-infect
 
 set -e -o pipefail
+echo "ENVS EXPORTED IN NIXOS INFECT:"
+printenv
 
 autodetectProvider() {
   if [ -e /etc/hetzner-build ]; then
