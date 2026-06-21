@@ -11,6 +11,7 @@ autodetectProvider() {
 }
 
 makeConf() {
+  local state_version="${NIX_CHANNEL:-nixos-25.11}"
   # Skip everything if main config already present
   [[ -e /etc/nixos/configuration.nix ]] && return 0
 
@@ -45,6 +46,10 @@ EOF
     fi
 
   [[ -n "$doNetConf" ]] && network_import="./networking.nix # generated at runtime by nixos-infect"
+
+  # Extract state version from provided nixos channel.
+  state_version="${state_version#nixos-}"
+  
   cat > /etc/nixos/configuration.nix << EOF
 { ... }: {
   imports = [
@@ -66,7 +71,7 @@ EOF
     trimmed_line=$(echo -n "$line" | xargs)
     echo -n "''$trimmed_line'' "
   done <<< "$keys")];
-  system.stateVersion = "{$NIX_CHANNEL:-nixos-25.11}";
+  system.stateVersion = "${state_version}";
   $kernel_params
 }
 EOF
